@@ -1,11 +1,104 @@
 ---
 title: "p8105_hw3_lah2231"
-output: html_document
+output: github_document
 date: "2024-10-13"
 ---
 
 # Problem 1
+
 ```{r}
-123
+devtools::install_github("P8105/p8105.datasets")
+library(p8105.datasets)
 ```
+
+```{r}
+ny_weather <- ny_noaa
+head(ny_weather)
+```
+```{r}
+str(ny_weather)
+colnames(ny_weather)
+nrow(ny_weather)
+ncol(ny_weather)
+```
+```{r}
+colSums(is.na(ny_weather))
+```
+
+The NOAA dataset contains information about weather data such as temperature and snowfall. The columns are called `r colnames(ny_weather)`. The dataset contains `r nrow(ny_weather)` rows and `r ncol(ny_weather)` columns. The variables recorded are for example precipitation, snowfall, snow depth, maximum temperature and minimum temperature. In addition to that there are station identification numbers and dates of observations.
+
+There are `r sum(is.na(ny_weather))` missing values in the dataset overall. Precipitation has `r sum(is.na(ny_weather[,"prcp"]))` missing values, snowfall has `r sum(is.na(ny_weather[,"snow"]))` missing, snow depth has `r sum(is.na(ny_weather[,"snwd"]))` missing, maximum temperature has `r sum(is.na(ny_weather[,"tmax"]))` missing, and minimum temperature has `r sum(is.na(ny_weather[,"tmin"]))` missing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
