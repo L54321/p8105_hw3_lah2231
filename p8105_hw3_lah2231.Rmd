@@ -1,0 +1,11 @@
+---
+title: "p8105_hw3_lah2231"
+output: html_document
+date: "2024-10-13"
+---
+
+# Problem 1
+```{r}
+123
+```
+
