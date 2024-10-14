@@ -84,9 +84,10 @@ ggplot(avg_tmax_simple, aes(x = year, y = avg_tmax)) +
 ```
 I have made a two panel plot by taking the average mx temp in january and july after removing missing tmax values. One can see that it correlates that in some years if january was rather warm july was also rather warm.
 
+## Temperature comparison plot
 ```{r}
 ggplot(ny_weather_clean, aes(x = tmin, y = tmax)) +
-  geom_bin2d() +
+  geom_density_2d() +
   labs(
     title = "tmax and tmin",
     x = "min temp",
@@ -94,22 +95,10 @@ ggplot(ny_weather_clean, aes(x = tmin, y = tmax)) +
   )
 ```
 
-Panel 1 shows the relationship between tmax and tmin using a 2D bin plot using geom_bin2d because of the large amount of data.
+This plot shows the relationship between tmax and tmin using a 2D bin plot using geom_bin2d because of the large amount of data.
 
-```{r}
 
-# Panel 2: Distribution of snowfall > 0 and < 100 by year using boxplot
-ny_weather_clean %>%
-  filter(snow > 0 & snow < 100) %>%
-  ggplot(aes(x = factor(year), y = snow)) +
-  geom_boxplot() +
-  labs(
-    title = "Distribution of Snowfall (0 < Snowfall < 100 mm) by Year",
-    x = "Year",
-    y = "Snowfall (mm)"
-  ) +
-  theme_minimal()
-```
+# Problem 2
 
 
 
