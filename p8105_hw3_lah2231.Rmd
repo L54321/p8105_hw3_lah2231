@@ -138,7 +138,15 @@ As instructed I converted sex and education to the given factors as instructed
 head(merged_data)
 ```
 
+```{r}
+gender_education_table <- merged_data %>%
+  group_by(education, sex) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sex, values_from = count)
 
+print(gender_education_table)
+```
+I made a better looking table showing the number of men and women in each education category
 
 
 
