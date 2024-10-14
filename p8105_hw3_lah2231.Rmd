@@ -146,9 +146,21 @@ gender_education_table <- merged_data %>%
 
 print(gender_education_table)
 ```
-I made a better looking table showing the number of men and women in each education category
+I made a better looking table showing the number of men and women in each education category. Most people had more than a high school education. A few more women had more than high school in comparison to men and a few more men had a high school equivalent in comparison to women. 
 
-
+```{r}
+# Plot age distributions for men and women by education category
+ggplot(merged_data, aes(x = age, fill = sex)) +
+  geom_density(alpha = 0.4) + 
+  facet_wrap(~education) +
+  labs(
+    title = "Age by gender and education category",
+    x = "Age",
+    y = "Density",
+    fill = "Gender"
+  )
+```
+I plotted the age distribution for men and women in each education category. There seems to be a peak of 20-40 year old women with more than high school education. I am not knowledgeable enough whatsoever in this area to really comment on it but I guess it is consistent with things I have read and not great, maybe there are issues in the way school is structured causing more difficulties for men.
 
 
 
