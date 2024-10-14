@@ -213,6 +213,9 @@ I put the data into long format, converted the minute labels to numbers and made
 
 # Problem 3
 
+```{r}
+
+```
 
 
 
