@@ -110,6 +110,7 @@ head(accelerometer_data)
 ```
 I put the data from the website into csv files and loaded them. I immediately took out the extra lines with other information from the demographic data.
 
+## Organizig Data
 ```{r}
 demographic_clean <- demographic_data %>%
   filter(age >= 21) %>%
@@ -132,12 +133,13 @@ merged_data <- merged_data %>%
                        labels = c("Less than high school", "High school equivalent", "More than high school"))
   )
 ```
+
 As instructed I converted sex and education to the given factors as instructed
 
 ```{r}
 head(merged_data)
 ```
-
+## Education by Gender Analysis
 ```{r}
 gender_education_table <- merged_data %>%
   group_by(education, sex) %>%
@@ -146,10 +148,11 @@ gender_education_table <- merged_data %>%
 
 print(gender_education_table)
 ```
+
 I made a better looking table showing the number of men and women in each education category. Most people had more than a high school education. A few more women had more than high school in comparison to men and a few more men had a high school equivalent in comparison to women. 
 
+## Plotting age distribution by education category seperated by sex
 ```{r}
-# Plot age distributions for men and women by education category
 ggplot(merged_data, aes(x = age, fill = sex)) +
   geom_density(alpha = 0.4) + 
   facet_wrap(~education) +
@@ -160,18 +163,55 @@ ggplot(merged_data, aes(x = age, fill = sex)) +
     fill = "Gender"
   )
 ```
+
 I plotted the age distribution for men and women in each education category. There seems to be a peak of 20-40 year old women with more than high school education. I am not knowledgeable enough whatsoever in this area to really comment on it but I guess it is consistent with things I have read and not great, maybe there are issues in the way school is structured causing more difficulties for men.
 
+## Plotting Total activity 
+```{r}
+merged_data <- merged_data %>%
+  rowwise() %>%
+  mutate(total_activity = sum(c_across(starts_with("min")), na.rm = TRUE)) %>%
+  ungroup()
+
+ggplot(merged_data, aes(x = age, y = total_activity, color = sex)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth() +
+  facet_wrap(~education) +
+  labs(
+    title = "Total activity vs age, by gender and education level",
+    x = "Age",
+    y = "Total activity",
+    color = "Gender"
+  )
+```
+
+I created a total variable of activity for each person using rowwise addition and starts_with to collect data from all columns. Afterwards I ungrouped. I then made the plot showing total activity vs age, comparing men to women, with separate panels for education levels.
+We find that there is the most activity in the less than high school education group at the age of around 21 - 30. Then there is a stronger decline than in all other groups in the less than high school group. I am not an expert in this field but my interpretation would be that people that did not finish high school might work in more physically demanding jobs early on and they might be more prone to injury due to these jobs which could be leading to less activity at an older age. Contrarily, people with more than high school education had a more consistent activity pattern throughout their life, with surprisingly women being more active.
+
+```{r}
+accelerometer_long <- merged_data %>%
+  pivot_longer(cols = starts_with("min"), 
+               names_to = "minute", 
+               values_to = "activity") %>%
+  mutate(minute = as.numeric(str_replace(minute, "min", "")))
+
+ggplot(accelerometer_long, aes(x = minute, y = activity, color = sex)) +
+  geom_line(alpha = 0.25) +
+  geom_smooth() +
+  facet_wrap(~education) +
+  scale_color_manual(values = c("Male" = "green", "Female" = "orange")) +
+  labs(
+    title = "Activity over time by education level and sex",
+    x = "Minute",
+    y = "Activity level",
+    color = "Sex"
+  )
+```
+
+I put the data into long format, converted the minute labels to numbers and made the plot that shows activity over time for each education level, with green lines for men and orange lines for women. There is more data the more than high school group and that most probably explains the more intense coloring. Generally people seem to  be more active during the day, which is more consistent in third group, possibly because it is more sedentary work. For the first two groups the lines fall a little bit indicating more physically demanding jobs in the morning. There are peaks in the morning and evening in the more than high school group which might be indicating that that group of people works out during those times. Such peaks do not exist so strongly in the other groups.
 
 
-
-
-
-
-
-
-
-
+# Problem 3
 
 
 
