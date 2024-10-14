@@ -100,12 +100,43 @@ This plot shows the relationship between tmax and tmin using a 2D bin plot using
 
 # Problem 2
 
+```{r}
+demographic_data <- read_csv("data/demographic_data.csv", skip = 4)
 
+accelerometer_data <- read_csv("data/accelerometer_data.csv")
 
+head(demographic_data)
+head(accelerometer_data)
+```
+I put the data from the website into csv files and loaded them. I immediately took out the extra lines with other information from the demographic data.
 
+```{r}
+demographic_clean <- demographic_data %>%
+  filter(age >= 21) %>%
+  drop_na(sex, age, BMI, education)
+```
+I have now removed participants under 21 years of age and missing demographic data
 
+```{r}
+merged_data <- demographic_clean %>%
+  inner_join(accelerometer_data, by = "SEQN")
+```
+And now I have merged on the seqn column
 
+```{r}
+# Convert sex and education to factors
+merged_data <- merged_data %>%
+  mutate(
+    sex = factor(sex, levels = c(1, 2), labels = c("Male", "Female")),
+    education = factor(education, levels = c(1, 2, 3), 
+                       labels = c("Less than high school", "High school equivalent", "More than high school"))
+  )
+```
+As instructed I converted sex and education to the given factors as instructed
 
+```{r}
+head(merged_data)
+```
 
 
 
