@@ -274,13 +274,63 @@ knitr::kable(ride_summary)
 ```
 In the table we can see that the number of members riding bikes rose dramatically especially in the summer when comparing 2020 and 2024 (from 15388 to 36200). Generally there are more riders in the July than in january which was to be expected due to weather conditions.
 
+```{r}
+july_2024_data <- cleaned_data %>%
+  filter(month == "July", year == 2024)
 
+top_stations <- july_2024_data %>%
+  group_by(start_station_name) %>%
+  summarise(total_rides = n()) %>%
+  arrange(desc(total_rides)) %>%
+  slice_head(n = 5)
 
+print(top_stations)
+knitr::kable(top_stations)
+```
 
+I filtered out all the July 24 data. Then I grouped by start stations, found the total rides, arranged them and took the top 5. The top stations were `r top_stations`.
 
+## Comparison median ride duration looking at days, months and the two years
+```{r}
+median_duration_data <- cleaned_data %>%
+  mutate(weekdays = factor(weekdays, 
+                           levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                           labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>%
+  group_by(weekdays, month, year) %>%
+  summarise(median_duration = median(duration)) %>%
+  ungroup()
 
+ggplot(median_duration_data, aes(x = weekdays, y = median_duration, group = weekdays)) +
+  geom_bar(stat = "identity", fill = "green") +
+  facet_grid(year ~ month) +
+  labs(
+    title = "Median ride duration",
+    x = "Day of the week",
+    y = "Ride duration"
+  )
 
+```
 
+I grouped the data by the aspects we want to look at, day, month and year and then took the median of the duration. I also sorted the weekdays and gave them labels that fit into the graph.
+We can see that there is almost always longer rides being done on the weekends which makes sense because people are probably using the bikes to go on longer trips instead of going to work. Overall people were doing shorter rides in 2024 than in 2020 which could be due to more routine in using the bikes or the bikes being more established for commuters instead of tourists. We can also note that during workdays the median is quite consistent, showing that the people that are using the bikes to go to work are probably doing that everyday. As mentioned before the orides are also longer in the summer in general, which also makes sense due to the weather conditions. Finally, the bikes overall became more popular in 2024 because time passed and they became more known.
+
+## Looking at e-bikes
+```{r}
+data_2024 <- cleaned_data %>%
+  filter(year == 2024)
+
+ggplot(data_2024, aes(x = rideable_type, y = duration, fill = member_casual)) +
+  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  facet_grid(~ month) +
+  labs(
+    title = "Ride Duration by month, membership and bike type",
+    x = "Bike type",
+    y = "Average ride duration",
+    fill = "Membership"
+  ) +
+  theme_minimal()
+```
+I made a barplot to compare the 
 
 
 
