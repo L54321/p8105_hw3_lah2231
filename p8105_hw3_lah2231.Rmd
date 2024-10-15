@@ -252,10 +252,27 @@ cleaned_data <- combined_data %>% drop_na()
 ```{r}
 summary(cleaned_data)
 ```
-I imported the four citi bike datasets. The dataset for January 2020 had `r ncol(jan_2020)` columns and `r nrow(jan_2020)` rows. The dataset for July 2020 had `r ncol(jul_2020)` columns and `r nrow(jul_2020)` rows. The dataset for January 2024 had `r ncol(jan_2024)` columns and `r nrow(naj_2024)` rows. The dataset for July 2024 had `r ncol(jul_2024)` columns and `r nrow(jul_2024)` rows.I combined all the datasets into onde after adding a column to identify month and year using bind_rows(). I checked for missing values and there were: 43 missing values in start_station_name and 207 missing values in end_station_name. I removed lines with missing values.The cleaned dataset had 99,253 rows and included ride duration values from 1 up to 238.780 minutes.
+I imported the four citi bike datasets. The dataset for January 2020 had `r ncol(jan_2020)` columns and `r nrow(jan_2020)` rows. The dataset for July 2020 had `r ncol(july_2020)` columns and `r nrow(july_2020)` rows. The dataset for January 2024 had `r ncol(jan_2024)` columns and `r nrow(jan_2024)` rows. The dataset for July 2024 had `r ncol(july_2024)` columns and `r nrow(july_2024)` rows.I combined all the datasets into onde after adding a column to identify month and year using bind_rows(). I checked for missing values and there were: 43 missing values in start_station_name and 207 missing values in end_station_name. I removed lines with missing values. The cleaned dataset had 99,253 rows and included ride duration values from 1 up to 238.780 minutes.
 
+## Summary table rides by year + month and seperating by rider type
+```{r}
+ride_summary <- cleaned_data %>%
+  group_by(year, month) %>%
+  summarise(
+    member_rides = sum(member_casual == "member"),
+    casual_rides = sum(member_casual == "casual")
+  )
 
+print(ride_summary)
 
+```
+
+I used group by to seperate by year, month and then summarise accorfing to member_casual column
+
+```{r}
+knitr::kable(ride_summary)
+```
+In the table we can see that the number of members riding bikes rose dramatically especially in the summer when comparing 2020 and 2024 (from 15388 to 36200). Generally there are more riders in the July than in january which was to be expected due to weather conditions.
 
 
 
