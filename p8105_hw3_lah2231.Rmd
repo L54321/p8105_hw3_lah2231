@@ -186,8 +186,9 @@ ggplot(merged_data, aes(x = age, y = total_activity, color = sex)) +
 ```
 
 I created a total variable of activity for each person using rowwise addition and starts_with to collect data from all columns. Afterwards I ungrouped. I then made the plot showing total activity vs age, comparing men to women, with separate panels for education levels.
-We find that there is the most activity in the less than high school education group at the age of around 21 - 30. Then there is a stronger decline than in all other groups in the less than high school group. I am not an expert in this field but my interpretation would be that people that did not finish high school might work in more physically demanding jobs early on and they might be more prone to injury due to these jobs which could be leading to less activity at an older age. Contrarily, people with more than high school education had a more consistent activity pattern throughout their life, with surprisingly women being more active.
+We find that there is the most activity in the less than high school education group at the age of around 21 - 30. Then there is a stronger decline than in all other groups in the less than high school group. I am not an expert in this field but my interpretation would be that people that did not finish high school might work in more physically demanding jobs early on and they might be more prone to injury due to these jobs which could be leading to less activity at an older age. Contrarily, people with more than high school education had a more consistent activity pattern throughout their life, with surprisingly women being more active
 
+## Plotting daytime activity
 ```{r}
 accelerometer_long <- merged_data %>%
   pivot_longer(cols = starts_with("min"), 
@@ -213,14 +214,45 @@ I put the data into long format, converted the minute labels to numbers and made
 
 # Problem 3
 
+## Importing data and putting into one dataset
 ```{r}
+jan_2020 <- read_csv("data/Jan 2020 Citi.csv")
+jan_2024 <- read_csv("data/Jan 2024 Citi.csv")
+july_2020 <- read_csv("data/July 2020 Citi.csv")
+july_2024 <- read_csv("data/July 2024 Citi.csv")
 
+#head(jan_2020)
+
+jan_2020 <- jan_2020 %>%
+  mutate(month = "January", year = 2020)
+
+jan_2024 <- jan_2024 %>%
+  mutate(month = "January", year = 2024)
+
+july_2020 <- july_2020 %>%
+  mutate(month = "July", year = 2020)
+
+july_2024 <- july_2024 %>%
+  mutate(month = "July", year = 2024)
+
+combined_data <- bind_rows(jan_2020, jan_2024, july_2020, july_2024)
+
+# Display the first few rows of the combined data
+head(combined_data)
 ```
 
+```{r}
+colSums(is.na(combined_data))
+```
+## Cleaning
+```{r}
+cleaned_data <- combined_data %>% drop_na()
+```
 
-
-
-
+```{r}
+summary(cleaned_data)
+```
+I imported the four citi bike datasets. The dataset for January 2020 had `r ncol(jan_2020)` columns and `r nrow(jan_2020)` rows. The dataset for July 2020 had `r ncol(jul_2020)` columns and `r nrow(jul_2020)` rows. The dataset for January 2024 had `r ncol(jan_2024)` columns and `r nrow(naj_2024)` rows. The dataset for July 2024 had `r ncol(jul_2024)` columns and `r nrow(jul_2024)` rows.I combined all the datasets into onde after adding a column to identify month and year using bind_rows(). I checked for missing values and there were: 43 missing values in start_station_name and 207 missing values in end_station_name. I removed lines with missing values.The cleaned dataset had 99,253 rows and included ride duration values from 1 up to 238.780 minutes.
 
 
 
