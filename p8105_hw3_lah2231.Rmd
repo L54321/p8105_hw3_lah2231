@@ -333,6 +333,9 @@ ggplot(data_2024, aes(x = rideable_type, y = duration, fill = member_casual)) +
 I made a barplot to compare the average duration of rides when looking at month, membership and bike type. We can see that non-members generally take longer rides, possibly due to tourists using the bikes or people with less knowledge on how to use them. Members seem to take equally long rides on classic as on electric bikes with a bit of an increase for electric bikes in July. Casual users had on average longer rides with the classic bikes, both in july and january.
 
 
+```{r}
+
+```
 
 
 
