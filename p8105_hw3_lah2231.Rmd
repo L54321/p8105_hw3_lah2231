@@ -49,6 +49,7 @@ ny_weather_clean <- ny_noaa %>%
   )
 head(ny_weather_clean)
 ```
+
 I cleaned the data by turning the date into separate variables for year, month and day and I changed the temperature from tenths of degrees celsius to degrees celsius and precipitation from teths of milimeters to mm.
 
 ## Common snowfall values
@@ -82,6 +83,7 @@ ggplot(avg_tmax_simple, aes(x = year, y = avg_tmax)) +
     y = "average max temperature"
   )
 ```
+
 I have made a two panel plot by taking the average mx temp in january and july after removing missing tmax values. One can see that it correlates that in some years if january was rather warm july was also rather warm.
 
 ## Temperature comparison plot
@@ -108,6 +110,7 @@ accelerometer_data <- read_csv("data/accelerometer_data.csv")
 head(demographic_data)
 head(accelerometer_data)
 ```
+
 I put the data from the website into csv files and loaded them. I immediately took out the extra lines with other information from the demographic data.
 
 ## Organizig Data
@@ -116,12 +119,14 @@ demographic_clean <- demographic_data %>%
   filter(age >= 21) %>%
   drop_na(sex, age, BMI, education)
 ```
+
 I have now removed participants under 21 years of age and missing demographic data
 
 ```{r}
 merged_data <- demographic_clean %>%
   inner_join(accelerometer_data, by = "SEQN")
 ```
+
 And now I have merged on the seqn column
 
 ```{r}
@@ -267,7 +272,7 @@ print(ride_summary)
 
 ```
 
-I used group by to seperate by year, month and then summarise accorfing to member_casual column
+I used group by to seperate by year, month and then summarise according to member_casual column.
 
 ```{r}
 knitr::kable(ride_summary)
@@ -311,6 +316,30 @@ ggplot(median_duration_data, aes(x = weekdays, y = median_duration, group = week
 
 ```
 
+## Same Plot as line plot
+```{r}
+median_duration_data <- cleaned_data %>%
+  mutate(weekdays = factor(weekdays, 
+                           levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                           labels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) %>%
+  group_by(weekdays, month, year) %>%
+  summarise(median_duration = median(duration)) %>%
+  ungroup()
+
+ggplot(median_duration_data, aes(x = weekdays, y = median_duration, color = as.factor(year), group = interaction(year, month))) +
+  geom_line(size = 2) +
+  scale_color_manual(values = c("2020" = "orange", "2024" = "green"))+
+  facet_grid(year ~ month) +
+  ylim(0, NA) +
+  labs(
+    title = "Median ride duration",
+    x = "Day of the week",
+    y = "Ride duration",
+    color = "Year"
+  )+
+  theme_classic()
+```
+
 I grouped the data by the aspects we want to look at, day, month and year and then took the median of the duration. I also sorted the weekdays and gave them labels that fit into the graph.
 We can see that there is almost always longer rides being done on the weekends which makes sense because people are probably using the bikes to go on longer trips instead of going to work. Overall people were doing shorter rides in 2024 than in 2020 which could be due to more routine in using the bikes or the bikes being more established for commuters instead of tourists. We can also note that during workdays the median is quite consistent, showing that the people that are using the bikes to go to work are probably doing that everyday. As mentioned before the orides are also longer in the summer in general, which also makes sense due to the weather conditions. Finally, the bikes overall became more popular in 2024 because time passed and they became more known.
 
@@ -328,9 +357,27 @@ ggplot(data_2024, aes(x = rideable_type, y = duration, fill = member_casual)) +
     y = "Average ride duration",
     fill = "Membership"
   ) +
-  theme_minimal()
+  theme_classic()
 ```
-I made a barplot to compare the average duration of rides when looking at month, membership and bike type. We can see that non-members generally take longer rides, possibly due to tourists using the bikes or people with less knowledge on how to use them. Members seem to take equally long rides on classic as on electric bikes with a bit of an increase for electric bikes in July. Casual users had on average longer rides with the classic bikes, both in july and january.
+## Same Plot as Violin Plot
+```{r}
+data_2024 <- cleaned_data %>%
+  filter(year == 2024)
+
+ggplot(data_2024, aes(x = rideable_type, y = duration, fill = member_casual)) +
+  geom_violin() + 
+  facet_grid(~ month) +
+  scale_fill_manual(values = c("member" = "green", "casual" = "orange")) +
+  labs(
+    title = "Ride Duration by month, membership and bike type",
+    x = "Bike type",
+    y = "Average ride duration",
+    fill = "Membership"
+  ) +
+  theme_classic()
+```
+
+I made a barplot and later a violin plot to compare the average duration of rides when looking at month, membership and bike type. We can see that non-members generally take longer rides, possibly due to tourists using the bikes or people with less knowledge on how to use them. Members seem to take equally long rides on classic as on electric bikes with a bit of an increase for electric bikes in July. Casual users had on average longer rides with the classic bikes, both in july and january.
 
 
 
